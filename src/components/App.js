@@ -6,12 +6,7 @@ const App = () => {
   const [input, setInput] = useState("");
   const [numbers, setNumbers] = useState([]);
   const [sum, setSum] = useState(0);
-
-  useEffect(() => {
-    const total = numbers.reduce((acc, num) => acc + num, 0);
-    setSum(total);
-  }, [numbers]);
-
+  
   const handleAddNumber = () => {
     const parsed = parseInt(input, 10);
     if (!isNaN(parsed)) {
@@ -20,19 +15,38 @@ const App = () => {
     setInput("");
   };
 
+   useEffect(() => {
+    let isCancelled = false;
+
+    const asyncSum = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const total = numbers.reduce((acc, num) => acc + num, 0);
+      if (!isCancelled) {
+        setSum(total);
+      }
+    };
+
+    asyncSum();
+    return () => {
+      isCancelled = true;
+    };
+  }, [numbers]);
+
   return (
-    <div className="main">
-      <h1>Number Sum Calculator</h1>
+    <div className="main" style={{ fontFamily: "Arial", padding: "1rem" }}>
+      <h1>Async Sum Calculator</h1>
       <input
-      id="number-input"
+        id="number-input"
         type="number"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter an integer"
+        placeholder="Enter a number"
       />
-      <button id="add-btn" onClick={handleAddNumber}>Add Number</button>
+      <button id="add-btn" onClick={handleAddNumber} style={{ marginLeft: "0.5rem" }}>
+        Add Number
+      </button>
 
-      <div>
+      <div style={{ marginTop: "1rem" }}>
         <p id="sum">Sum: {sum}</p>
         {numbers.length > 0 && (
           <p id="numbers">Numbers: {numbers.join(", ")}</p>

@@ -24,16 +24,19 @@ const App = () => {
     <div className="main">
       <h1>Number Sum Calculator</h1>
       <input
+      id="number-input"
         type="number"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter an integer"
       />
-      <button onClick={handleAddNumber}>Add Number</button>
+      <button id="add-btn" onClick={handleAddNumber}>Add Number</button>
 
       <div>
-        {numbers.length > 0 && <p>Numbers: {numbers.join(", ")}</p>}
-        <p>Sum: {sum}</p>
+        <p id="sum">Sum: {sum}</p>
+        {numbers.length > 0 && (
+          <p id="numbers">Numbers: {numbers.join(", ")}</p>
+        )}
       </div>
     </div>
   );

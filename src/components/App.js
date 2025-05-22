@@ -32,7 +32,7 @@ const App = () => {
       <button onClick={handleAddNumber}>Add Number</button>
 
       <div>
-        <p>Numbers: {numbers.join(", ")}</p>
+        {numbers.length > 0 && <p>Numbers: {numbers.join(", ")}</p>}
         <p>Sum: {sum}</p>
       </div>
     </div>

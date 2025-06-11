@@ -6,37 +6,34 @@ const App = () => {
   const [numbers, setNumbers] = useState([]);
   const [sum, setSum] = useState(0);
 
-  
+
+
   const handleAddNumber = () => {
     const parsed = parseInt(numberInput, 10);
     if (!isNaN(parsed)) {
-      setNumbers((prev) => [...prev, parsed]);
+      setNumbers(prev => [...prev, parsed]);
     }
     setNumberInput('');
   };
 
- 
-  useEffect(() => {
-    let isCancelled = false;
 
-    const calculateSum = async () => {
-     
-      const total = await new Promise((resolve) => {
+  useEffect(() => {
+    let cancelled = false;
+    const calculateSumAsync = async () => {
+      const total = await new Promise(resolve => {
         setTimeout(() => {
           const result = numbers.reduce((acc, val) => acc + val, 0);
           resolve(result);
         }, 0);
       });
-
-      if (!isCancelled) {
+      if (!cancelled) {
         setSum(total);
       }
     };
 
-    calculateSum();
-
+    calculateSumAsync();
     return () => {
-      isCancelled = true;
+      cancelled = true;
     };
   }, [numbers]);
 
@@ -65,5 +62,6 @@ const App = () => {
     </div>
   );
 };
+
 
 export default App;

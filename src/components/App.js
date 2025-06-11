@@ -2,44 +2,67 @@ import React, { useState, useEffect } from "react";
 import "./App.css"; 
 
 const App = () => {
-  const [input, setInput] = useState("");
+   const [numberInput, setNumberInput] = useState('');
   const [numbers, setNumbers] = useState([]);
   const [sum, setSum] = useState(0);
 
-  useEffect(() => {
-    let isCancelled = false;
-    async function calculateSumAsync() {
-      await new Promise((r) => setTimeout(r, 10));
-      if (!isCancelled) {
-        setSum(numbers.reduce((acc, num) => acc + num, 0));
-      }
-    }
-    calculateSumAsync();
-    return () => { isCancelled = true; };
-  }, [numbers]);
-
   const handleAddNumber = () => {
-    const parsed = parseInt(input, 10);
+    const parsed = parseInt(numberInput, 10);
     if (!isNaN(parsed)) {
-      setNumbers([...numbers, parsed]);
+      setNumbers(prev => [...prev, parsed]);
     }
-    setInput("");
+    setNumberInput('');
   };
 
-  
+  useEffect(() => {
+    let isCancelled = false;
+
+    const calculateSumAsync = async () => {
+      const total = await new Promise(resolve => {
+        setTimeout(() => {
+          const result = numbers.reduce((acc, val) => acc + val, 0);
+          resolve(result);
+        }, 0);
+      });
+
+      if (!isCancelled) {
+        setSum(total);
+      }
+    };
+
+
+    calculateSumAsync()
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [numbers]);
 
   return (
-    <div>
-      <h1>Number Sum Calculator</h1>
-      <input
-        type="number"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter an integer"
-      />
-      <button onClick={handleAddNumber}>Add Number</button>
-      <p>Numbers: {numbers.join(", ")}</p>
-      <p>Sum: {sum}</p>
+    <div className="p-4 max-w-md mx-auto bg-white shadow rounded">
+      <h2 className="text-xl font-bold mb-4">Sum Calculator</h2>
+      <div className="flex items-center gap-2 mb-4">
+        <input
+          type="number"
+          value={numberInput}
+          onChange={(e) => setNumberInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleAddNumber();
+          }}
+          className="border border-gray-300 rounded px-2 py-1 w-full"
+          placeholder="Enter a number"
+        />
+        <button
+          onClick={handleAddNumber}
+          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+        >
+          Add
+        </button>
+      </div>
+      <div className="text-lg">Current Sum: <strong>{sum}</strong></div>
+      <div className="mt-2 text-sm text-gray-500">
+        Numbers: {numbers.join(', ')}
+      </div>
     </div>
   );
 };
